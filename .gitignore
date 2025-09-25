@@ -1,0 +1,22 @@
+# Compiled object files
+*.o
+
+# Compiled binaries
+game
+a.out
+
+# Databases
+*.db
+
+# Logs
+*.log
+
+# VS Code settings
+.vscode/
+
+# Git stuff
+*.swp
+.DS_Store
+
+# Backup files
+*~
