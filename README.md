@@ -1,93 +1,166 @@
-# CExtension
 
+# Hyper Breakers
 
+A fast-paced 2D multiplayer combat platformer built from scratch in C using SDL2. Two players battle in dynamic arenas featuring physics-based movement, multiple weapon types, and environmental hazards.
 
-## Getting started
+## Project Overview
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Hyper Breakers is a local multiplayer fighting game where two players compete on a single keyboard. Players navigate platform-based arenas, collect randomly spawning weapons, and engage in combat using projectile-based weapons with realistic trajectories. The game features a complete physics system, smooth animations, and comprehensive audio feedback.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Key Features
 
-## Add your files
+- **Local Multiplayer Combat** - Two players battle on the same keyboard with separate control schemes
+- **5 Unique Weapons** - Each with different damage, fire rate, ammunition, and special properties
+- **Physics-Based Movement** - Acceleration, friction, gravity, and momentum create realistic character control
+- **Dynamic Environments** - Moving platforms, jump pads, climbable ladders, and damaging hazards
+- **Polished Audio-Visual Experience** - Character animations, weapon effects, and context-aware soundtrack
+- **Multiple Game States** - Main menu, gameplay, pause screen, and game over screen with smooth transitions
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Demo Video
+
+https://github.com/user-attachments/assets/8aa803c6-8009-4ef6-896a-ba2ff821b112
+
+## How It Works
+
+The game runs a 60 FPS game loop that processes input, updates game physics, checks collisions, and renders the current state. Players control characters that can run, jump, crouch, climb ladders, and shoot in any direction.
+
+## Core Systems
+
+**GameObject Architecture**: Every interactive element (platforms, hazards, bullets, weapons) is a GameObject with polymorphic behavior through function pointers, allowing different responses to collisions and updates without OOP.
+
+**Physics Engine**: Implements gravity, collision detection with separated axis checking, and velocity-based movement with delta time for frame-independent physics.
+
+**Weapon System**: Weapons spawn every 10 seconds on random platforms. Each weapon type has unique properties:
+- Pistol: Balanced starter weapon
+- Rifle: Rapid-fire with burst mode
+- Shotgun: Multiple projectiles with spread
+- Sniper: High damage, slow reload
+- RPG: Maximum damage, single shot
+
+**Audio System**: Multi-channel sound mixing allows concurrent sound effects (shooting, jumping, reloading) without cutoff, plus context-aware background music.
+
+## Core Libraries Needed
+
+The following SDL2 libraries are required to build and run Hyper Breakers:
+
+1. **SDL2** (version 2.0.0 or higher)
+   - Main library for window creation and input handling
+2. **SDL2_image**
+   - For loading PNG/JPG sprites
+3. **SDL2_mixer**
+   - For audio playback and sound mixing
+4. **SDL2_ttf**
+   - For rendering text and fonts
+
+## Build and Run Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone [repository-url]
+   cd hyper-breakers
+   ```
+
+2. **Compile the game:**
+   ```bash
+   make clean
+   make
+   ```
+
+3. **Run the game:**
+   ```bash
+   ./hyperbreakers
+   ```
+
+## Controls
+
+### Player 1 (Left side)
+
+| Key | Action |
+|-----|--------|
+| A / D | Move left / right |
+| W | Jump / Aim upward |
+| S | Crouch / Aim downward / Drop through platforms |
+| 1 | Hold to aim, release to shoot |
+| 2 | Pick up weapon (while crouching) |
+
+### Player 2 (Right side)
+
+| Key | Action |
+|-----|--------|
+| ← / → | Move left / right |
+| ↑ | Jump / Aim upward |
+| ↓ | Crouch / Aim downward / Drop through platforms |
+| N | Hold to aim, release to shoot |
+| M | Pick up weapon (while crouching) |
+
+### General Controls
+
+- **P** - Pause/Resume game
+- **ESC** - Exit game
+
+## My Contributions
+
+### Player Input and Control System
+- **Designed and implemented the complete player input handling system** (handlePlayerInput() in player.c) that processes keyboard inputs for both players simultaneously
+- **Developed physics-based movement mechanics** with acceleration and friction rather than instant velocity changes, creating realistic character momentum and weight
+- **Implemented the crouch system** that modifies player hitbox dimensions and enables dropping through one-way platforms
+- **Created the dual-purpose control scheme** where movement keys double as aiming controls when holding the shoot button
+
+### Shooting and Combat Mechanics
+- **Built the complete shooting system** including the hold-to-aim and release-to-fire mechanism that allows precise shot placement
+- **Implemented trigonometric bullet trajectory calculations** that compute projectile paths based on player aim angle and facing direction
+- **Developed the weapon differentiation system** where each gun type has unique damage values, ammunition counts, reload times, and special properties like shotgun spread
+- **Created the weapon pickup mechanism** that detects nearby weapons when players crouch and press the pickup key
+
+### Audio System Integration
+- **Integrated comprehensive sound effects** throughout the gameplay, connecting player actions to corresponding audio feedback
+- **Implemented context-aware music system** that intelligently pauses/resumes rather than restarting when transitioning between game states
+- **Developed multi-channel audio management** preventing sound cutoff by assigning different sound types to separate mixing channels
+- **Created the weapon-specific sound system** that plays appropriate audio based on equipped gun type
+
+### Collision Detection and Physics
+- **Implemented the separated axis collision checking** that prevents players from getting stuck in walls by checking X and Y collisions independently
+- **Developed collision response behaviors** for different surface types including solid platforms, one-way platforms, and bounce pads
+- **Created the ground detection system** that enables jumping only when players are on solid surfaces
+- **Debugged complex edge cases** in collision detection including corner collisions and moving platform interactions
+
+### Weapon and Item Systems
+- **Contributed to the weapon spawning timer system** that generates new weapons every 10 seconds
+- **Implemented collision avoidance algorithms** ensuring weapons spawn only in valid locations without overlapping walls
+- **Developed the weapon stats application system** that updates player properties when picking up new weapons
+- **Created weapon cleanup mechanisms** that remove old weapons when new ones spawn
+
+### Memory Management and Optimization
+- **Implemented proper memory cleanup** throughout player and weapon systems using custom free functions
+- **Utilized Valgrind extensively** to identify and fix memory leaks, achieving zero leaks in final build
+- **Optimized performance** to maintain stable 60 FPS even with multiple bullets and effects on screen
+
+## Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.doc.ic.ac.uk/npm24/cextension.git
-git branch -M master
-git push -uf origin master
+hyper-breakers/
+├── src/
+│   ├── audio.c/h           # Sound and music management
+│   ├── bar.c/h             # Health bar rendering
+│   ├── gameLoop.c/h        # Main game loop and state management
+│   ├── gameMode.c/h        # Game initialization
+│   ├── genericDynamicList.c/h  # Dynamic array implementation
+│   ├── level.c/h           # Level building and GameObjects
+│   ├── menu.c/h            # UI and menu screens
+│   ├── physics.c/h         # Collision detection system
+│   ├── player.c/h          # Player controls and mechanics
+│   ├── render.c/h          # Rendering pipeline
+│   ├── sprites.c/h         # Animation system
+│   ├── vector.c/h          # Vector mathematics
+│   └── weapon.c/h          # Weapon spawning and stats
+├── assets/
+│   ├── sprites/            # Character and object graphics
+│   ├── sounds/             # Sound effects and music
+│   └── fonts/              # UI fonts
+├── Makefile                # Build configuration
+└── README.md              # This file
 ```
 
-## Integrate with your tools
+## Team
 
-- [ ] [Set up project integrations](https://gitlab.doc.ic.ac.uk/npm24/cextension/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+This project was developed as part of a 4-person team for the Imperial College London Computing Practical Module's C Project. Each member contributed to different core systems while collaborating on integration and debugging.
